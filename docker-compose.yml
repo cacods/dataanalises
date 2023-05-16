@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+
+  frontend:
+    container_name: dataanalises_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile # can be ommited?
+    volumes:
+      - './frontend:/app'
+      - 'frontend/app/node_modules'
+    ports:
+      - 3001:3000
+    environment:
+      #- CHOKIDAR_USEPOLLING="true"
+      #- WATCHPACK_POLLING=true
+      #- FAST_REFRESH=false
+      - WDS_SOCKET_PORT=3001
+  db:
+    container_name: dataanalises_db
+    image: postgres
+    volumes:
+      - ./backend/data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  backend:
+    container_name: dataanalises_backend
+    build: ./backend/dataanalises
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend/dataanalises:/app
+    ports:
+      - "8001:8000"
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
