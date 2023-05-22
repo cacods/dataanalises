@@ -53,7 +53,7 @@ spec:
         spec:
             containers:
                 - name: backend
-                  image: caco21/dataanalises_backend:latest
+                  image: caco21/dataanalises_backend:{{TAG}}
                   ports:
                   - containerPort: 8000
                   env:
