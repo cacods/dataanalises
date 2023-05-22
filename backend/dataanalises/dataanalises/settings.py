@@ -26,7 +26,8 @@ SECRET_KEY = "django-insecure--03d&r_df-vtz%9wkvme&wv_=&p1o#8@xj@m=m2h@$@-u8ra#f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']  # for kubernetes
 
 
 # Application definition
@@ -80,7 +81,7 @@ DATABASES = {
         'NAME': os.environ.get('POSTGRES_NAME'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'db',
+        'HOST': 'db',  # can be defined by env variable
         'PORT': 5432,
     }    
 }
