@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: postgres
+spec:
+    selector:
+        matchLabels:
+            app: postgres
+    template:
+        metadata:
+            labels:
+                app: postgres
+        spec:
+            containers:
+                - name: postgres
+                  image: postgres:15.3
+                  ports:
+                  - containerPort: 5432
+                  env:
+                  - name: POSTGRES_DB
+                    value: postgres
+                  - name: POSTGRES_USER
+                    value: postgres
+                  - name: POSTGRES_PASSWORD
+                    value: postgres
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+    name: db
+spec:
+    selector:
+        app: postgres
+    ports:
+        - port: 5432
+    type: ClusterIP
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: backend 
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            app: backend
+    template:
+        metadata:
+            labels:
+                app: backend
+        spec:
+            containers:
+                - name: backend
+                  image: caco21/dataanalises_backend:latest
+                  ports:
+                  - containerPort: 8000
+                  env:
+                  - name: POSTGRES_NAME
+                    value: postgres
+                  - name: POSTGRES_USER
+                    value: postgres
+                  - name: POSTGRES_PASSWORD
+                    value: postgres
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+    name: backend
+spec:
+    selector:
+        app: backend
+    ports:
+        - port: 80
+          targetPort: 8000
+    type: LoadBalancer
